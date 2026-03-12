@@ -22,8 +22,8 @@ SET_SPEED_PERSISTENCE = 2.5  # seconds
 
 @dataclass(frozen=True)
 class FontSizes:
-  current_speed: int = 176
-  speed_unit: int = 66
+  current_speed: int = 90
+  speed_unit: int = 26
   max_speed: int = 36
   set_speed: int = 112
 
@@ -178,6 +178,7 @@ class HudRenderer(Widget):
       self._draw_set_speed(rect)
 
     self._draw_steering_wheel(rect)
+    self._draw_current_speed(rect)
 
   def _draw_steering_wheel(self, rect: rl.Rectangle) -> None:
     wheel_txt = self._txt_wheel_critical if self._show_wheel_critical else self._txt_wheel
@@ -267,10 +268,11 @@ class HudRenderer(Widget):
     """Draw the current vehicle speed and unit."""
     speed_text = str(round(self.speed))
     speed_text_size = measure_text_cached(self._font_bold, speed_text, FONT_SIZES.current_speed)
-    speed_pos = rl.Vector2(rect.x + rect.width / 2 - speed_text_size.x / 2, 180 - speed_text_size.y / 2)
-    rl.draw_text_ex(self._font_bold, speed_text, speed_pos, FONT_SIZES.current_speed, 0, COLORS.WHITE)
+    speed_pos = rl.Vector2(rect.x + rect.width - speed_text_size.x - 40, rect.y + 5)
+    rl.draw_text_ex(self._font_bold, speed_text, speed_pos, FONT_SIZES.current_speed, 0, rl.Color(0x80, 0x80, 0xFF, 255))
+
 
     unit_text = tr("km/h") if ui_state.is_metric else tr("mph")
     unit_text_size = measure_text_cached(self._font_medium, unit_text, FONT_SIZES.speed_unit)
-    unit_pos = rl.Vector2(rect.x + rect.width / 2 - unit_text_size.x / 2, 290 - unit_text_size.y / 2)
-    rl.draw_text_ex(self._font_medium, unit_text, unit_pos, FONT_SIZES.speed_unit, 0, COLORS.WHITE_TRANSLUCENT)
+    unit_pos = rl.Vector2(rect.x + rect.width - unit_text_size.x - 40, rect.y + 5 + speed_text_size.y + 5)
+    rl.draw_text_ex(self._font_medium, unit_text, unit_pos, FONT_SIZES.speed_unit, 0, rl.Color(0x80, 0x80, 0xFF, 255))
